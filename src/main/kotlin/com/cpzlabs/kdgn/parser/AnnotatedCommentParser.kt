@@ -1,7 +1,7 @@
 package com.cpzlabs.kdgn.parser
 
 
-const val START_ANNOTATED_COMMENT_PATTERN = """//\s*(sourcery:)"""
+const val START_ANNOTATED_COMMENT_PATTERN = """//\s*(kdgn:)"""
 
 const val ANNOTATED_COMMENT_REGEX = """(?:(.*?)\s*:)?\s*(.*?)\s*=\s*(.*)"""
 

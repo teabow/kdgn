@@ -39,7 +39,7 @@ class TypesParserTest {
                 var country: String = ""
             }
 
-            // sourcery: sourceable = true
+            // kdgn: sourceable = true
             class University(val id: Int, val name: String, region: String): AutoPersistable
         """.trimIndent()
 

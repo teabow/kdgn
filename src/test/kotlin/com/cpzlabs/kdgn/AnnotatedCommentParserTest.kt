@@ -8,14 +8,14 @@ class AnnotatedCommentParserTest {
 
     @Test
     fun parseAnnotatedCommentTest() {
-        val comment = "// sourcery: defaultValue = \"\""
+        val comment = "// kdgn: defaultValue = \"\""
 
         assertEquals(mapOf("defaultValue" to "\"\""), parseAnnotatedComment(comment))
     }
 
     @Test
     fun parseAnnotatedCommentWithNamespaceTest() {
-        val comment = "//  sourcery:persistence: defaultValue = \"\", parser = .intValue"
+        val comment = "//  kdgn:persistence: defaultValue = \"\", parser = .intValue"
 
         assertEquals(
             mapOf(

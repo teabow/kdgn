@@ -7,8 +7,6 @@ plugins {
     `maven-publish`
 }
 
-// TODO: https://help.github.com/en/github/managing-packages-with-github-packages/configuring-gradle-for-use-with-github-packages
-
 group = "com.cpzlabs"
 version = "0.5.0"
 
@@ -42,6 +40,25 @@ dependencies {
     implementation("com.github.cretz.kastree:kastree-ast-jvm:${Versions.kastree}")
     implementation("com.github.cretz.kastree:kastree-ast-psi:${Versions.kastree}")
     implementation("com.github.cretz.kastree:kastree-ast-common:${Versions.kastree}")
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/teabow/kdgn")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("PASSWORD")
+            }
+        }
+    }
+
+    publications {
+        create<MavenPublication>("kdgn") {
+            from(components["java"])
+        }
+    }
 }
 
 tasks.withType<KotlinCompile> {

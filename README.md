@@ -39,3 +39,27 @@ val packageDest = "path/to/src/generated"
 
 compileTemplates(templateSource, packageSource, packageDest)
 ```
+
+Custom commented annotations can be added into the code to be later interpreted in templates.
+
+The following code :
+
+```kotlin
+class User: UserSpec, AutoPersistable {
+    
+    // kdgn:persistence: defaultValue = "A"
+    val lastname: String? = null
+
+    // kdgn:persistence: defaultValue = "B"
+    val firstname: String? = null
+    
+}
+```
+
+will produce annotations available in templates :
+
+```
+{{ member.annotations["persistence.defaultValue"] | raw }}
+```
+
+Note: the `kdgn` prefix is required, then you can add an optional namespace (`persistence` in the above example).
