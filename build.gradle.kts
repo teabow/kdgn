@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.cpzlabs"
-version = "0.5.0"
+version = "0.5.1"
 
 object Versions {
     val junit = "4.13"
@@ -58,6 +58,12 @@ publishing {
         create<MavenPublication>("kdgn") {
             from(components["java"])
         }
+    }
+}
+
+val jar by tasks.getting(Jar::class) {
+    manifest {
+        attributes["Main-Class"] = "com.cpzlabs.kdgn.MainKt"
     }
 }
 

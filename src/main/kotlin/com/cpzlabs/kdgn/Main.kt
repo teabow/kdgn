@@ -1,3 +1,5 @@
+package com.cpzlabs.kdgn
+
 import com.cpzlabs.kdgn.compiler.compileTemplates
 import com.cpzlabs.kdgn.helpers.Logger
 import kotlinx.coroutines.runBlocking
