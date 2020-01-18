@@ -23,13 +23,15 @@ fun compileTemplates(templateSource: String, packageSource: String, packageDest:
         }
     })
 
+    val parsedTypes = parseCode(packageSource)
+
     selectRegularFiles(templateSource).forEach { file ->
         runBlocking {
             val template = Template(file.asString(), config)
             val rendered = """
             |// Auto-generated file (${Date()}). Do not edit.
             |
-            |${template(mapOf(TEMPLATE_TYPES_KEY to parseCode(packageSource))).trimIndent()}
+            |${template(mapOf(TEMPLATE_TYPES_KEY to parsedTypes)).trimIndent()}
             """.trimMargin()
 
             File(packageDest).createDir()
