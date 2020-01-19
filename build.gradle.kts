@@ -4,10 +4,10 @@ plugins {
     java
     kotlin("jvm") version "1.3.61"
     kotlin("kapt") version "1.3.61"
-    `maven-publish`
+    maven
 }
 
-group = "com.cpzlabs"
+group = "com.github.teabow"
 version = "0.5.1"
 
 object Versions {
@@ -40,25 +40,6 @@ dependencies {
     implementation("com.github.cretz.kastree:kastree-ast-jvm:${Versions.kastree}")
     implementation("com.github.cretz.kastree:kastree-ast-psi:${Versions.kastree}")
     implementation("com.github.cretz.kastree:kastree-ast-common:${Versions.kastree}")
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/teabow/kdgn")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("PASSWORD")
-            }
-        }
-    }
-
-    publications {
-        create<MavenPublication>("kdgn") {
-            from(components["java"])
-        }
-    }
 }
 
 val jar by tasks.getting(Jar::class) {

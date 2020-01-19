@@ -1,6 +1,6 @@
 package com.cpzlabs.kdgn
 
-import com.cpzlabs.kdgn.compiler.compileTemplates
+import com.cpzlabs.kdgn.compiler.compileAllTemplates
 import com.cpzlabs.kdgn.extensions.asString
 import io.mockk.every
 import io.mockk.mockkConstructor
@@ -21,7 +21,7 @@ class TemplateCompilerTest {
 
         val packageDist = "src/test/kotlin/com/cpzlabs/kdgn/generated"
 
-        compileTemplates(templateSource, packageSource, packageDist)
+        compileAllTemplates(templateSource, packageSource, packageDist)
 
         val generatedFile = File("$packageDist/AutoPersistable.kt")
 

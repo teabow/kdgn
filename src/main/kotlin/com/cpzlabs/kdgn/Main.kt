@@ -1,6 +1,6 @@
 package com.cpzlabs.kdgn
 
-import com.cpzlabs.kdgn.compiler.compileTemplates
+import com.cpzlabs.kdgn.compiler.compileAllTemplates
 import com.cpzlabs.kdgn.helpers.Logger
 import kotlinx.coroutines.runBlocking
 
@@ -18,7 +18,7 @@ fun main(args: Array<String>) = runBlocking {
 
     if (argsMap.isNotEmpty() && argsMapValues.all { it != null }) {
 
-        compileTemplates(argsMap["templateSource"]!!, argsMap["packageSource"]!!, argsMap["packageDest"]!!)
+        compileAllTemplates(argsMap["templateSource"]!!, argsMap["packageSource"]!!, argsMap["packageDest"]!!)
 
     } else {
         Logger.logMessage("""
