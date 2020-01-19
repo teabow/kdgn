@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.teabow"
-version = "0.5.1"
+version = "0.5.2"
 
 object Versions {
     val junit = "4.13"
