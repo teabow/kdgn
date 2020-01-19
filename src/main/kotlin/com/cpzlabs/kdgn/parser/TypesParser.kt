@@ -44,8 +44,8 @@ fun parseFile(fileContent: String): List<Type> {
 
                 // parse properties members
                 val propertiesMembersTypes: List<Type> = visitedNode.members.fold(mutableListOf()) { acc, current ->
-                    val prop = current as Node.Decl.Property
-                    if (isPropertyVisible(prop)) {
+                    val prop = current as? Node.Decl.Property
+                    if (prop != null && isPropertyVisible(prop)) {
                         mutableListOf(
                             *acc.toTypedArray(),
                             *prop.vars.mapNotNull { v ->

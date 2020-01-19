@@ -4,11 +4,11 @@ plugins {
     java
     kotlin("jvm") version "1.3.61"
     kotlin("kapt") version "1.3.61"
-    `maven-publish`
+    maven
 }
 
 group = "com.github.teabow"
-version = "0.5.2"
+version = "0.5.3"
 
 object Versions {
     val junit = "4.13"
@@ -24,8 +24,8 @@ repositories {
     maven { url = uri("https://dl.google.com/dl/android/maven2/") }
     jcenter { url = uri("http://jcenter.bintray.com/") }
     maven { url = uri("https://dl.bintray.com/korlibs/korlibs") }
-    maven {  url = uri("https://dl.bintray.com/hotkeytlt/maven") }
-    maven {  url = uri("https://jitpack.io") }
+    maven { url = uri("https://dl.bintray.com/hotkeytlt/maven") }
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
