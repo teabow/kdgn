@@ -6,6 +6,7 @@ import com.soywiz.korte.TemplateConfig
 import com.cpzlabs.kdgn.extensions.*
 import kotlinx.coroutines.runBlocking
 import com.cpzlabs.kdgn.parser.Type
+import com.cpzlabs.kdgn.parser.getGeneratedPackage
 import com.cpzlabs.kdgn.parser.parseCode
 import java.io.File
 import java.util.*
@@ -29,6 +30,7 @@ private suspend fun compileTemplate(file: File, types: List<Type>, packageDest: 
     val template = Template(file.asString(), config)
     val rendered = """
             |// Auto-generated file (${Date()}). Do not edit.
+            |${getGeneratedPackage(packageDest)}
             |
             |${template(mapOf(TEMPLATE_TYPES_KEY to types)).trimIndent()}
             """.trimMargin()

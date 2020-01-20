@@ -27,6 +27,7 @@ class TemplateCompilerTest {
 
         val expected = """
             // Auto-generated file (TODAY). Do not edit.
+            package com.cpzlabs.kdgn.generated
             import com.cpzlabs.kdgn.mocks.UserMock
             import com.cpzlabs.kdgn.mocks.Academy
             import com.cpzlabs.kdgn.mocks.University
