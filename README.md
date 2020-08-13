@@ -37,7 +37,7 @@ val templateSource = "path/to/template"
 val packageSource = "path/to/src/package"
 val packageDest = "path/to/src/generated"
 
-compileTemplates(templateSource, packageSource, packageDest)
+compileAllTemplates(templateSource, packageSource, packageDest)
 ```
 
 Custom commented annotations can be added into the code to be later interpreted in templates.

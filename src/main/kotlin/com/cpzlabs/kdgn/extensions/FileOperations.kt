@@ -7,6 +7,7 @@ import java.nio.file.Paths
 import kotlin.streams.toList
 
 const val KOTLIN_FILE_EXTENSION = "kt"
+const val JAVA_FILE_EXTENSION = "java"
 
 fun File.asString() = try {
     this.readText(charset = Charsets.UTF_8)

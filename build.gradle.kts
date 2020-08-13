@@ -16,6 +16,7 @@ object Versions {
     val coroutines = "1.3.3"
     val korte = "1.2.1"
     val kastree = "0.4.0"
+    val javaParser = "3.16.1"
 }
 
 repositories {
@@ -40,6 +41,10 @@ dependencies {
     implementation("com.github.cretz.kastree:kastree-ast-jvm:${Versions.kastree}")
     implementation("com.github.cretz.kastree:kastree-ast-psi:${Versions.kastree}")
     implementation("com.github.cretz.kastree:kastree-ast-common:${Versions.kastree}")
+
+    implementation("com.github.javaparser:javaparser-symbol-solver-core:${Versions.javaParser}")
+    implementation("com.github.javaparser:javaparser-core:${Versions.javaParser}")
+
 }
 
 val jar by tasks.getting(Jar::class) {

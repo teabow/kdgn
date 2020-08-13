@@ -1,9 +1,10 @@
 package com.cpzlabs.kdgn
 
+import com.cpzlabs.kdgn.models.Member
+import com.cpzlabs.kdgn.models.Type
 import kastree.ast.Node
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import com.cpzlabs.kdgn.parser.Type
 import com.cpzlabs.kdgn.parser.isPropertyVisible
 import com.cpzlabs.kdgn.parser.parseFile
 
@@ -50,13 +51,13 @@ class TypesParserTest {
                 name = "Academy",
                 packageName = "test",
                 implementing = listOf(Type(name = "AutoPersistable")),
-                members = listOf(Type(name = "country"))
+                members = listOf(Member(name = "country"))
             ),
             Type(
                 name = "University",
                 packageName = "test",
                 implementing = listOf(Type(name = "AutoPersistable")),
-                members = listOf(Type(name = "id"), Type(name = "name")),
+                members = listOf(Member(name = "id"), Member(name = "name")),
                 annotations = mapOf("sourceable" to "true")
             )
         )

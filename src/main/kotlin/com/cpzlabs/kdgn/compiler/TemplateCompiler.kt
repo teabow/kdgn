@@ -1,13 +1,13 @@
 package com.cpzlabs.kdgn.compiler
 
+import com.cpzlabs.kdgn.extensions.*
+import com.cpzlabs.kdgn.models.Type
+import com.cpzlabs.kdgn.parser.getGeneratedPackage
+import com.cpzlabs.kdgn.parser.parseCode
 import com.soywiz.korte.Filter
 import com.soywiz.korte.Template
 import com.soywiz.korte.TemplateConfig
-import com.cpzlabs.kdgn.extensions.*
 import kotlinx.coroutines.runBlocking
-import com.cpzlabs.kdgn.parser.Type
-import com.cpzlabs.kdgn.parser.getGeneratedPackage
-import com.cpzlabs.kdgn.parser.parseCode
 import java.io.File
 import java.util.*
 
