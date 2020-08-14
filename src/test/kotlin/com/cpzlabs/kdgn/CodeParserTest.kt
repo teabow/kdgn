@@ -64,21 +64,30 @@ class CodeParserTest {
                 packageName = "com.cpzlabs.kdgn.mocks",
                 implementing = listOf(Type(name = "Serializable")),
                 members = listOf(
-                    Member(name = "street", type = "String"),
-                    Member(name = "city", type = "String"),
-                    Member(name = "zipCode", type = "String"),
-                    Member(name = "country", type = "String", annotations = mapOf("AutoModelField" to "[required = false]"))
+                    Member(name = "street", type = "String", annotations = mapOf("AutoModelField" to "required = true")),
+                    Member(name = "city", type = "String", annotations = mapOf("AutoModelField" to "required = true")),
+                    Member(name = "zipCode", type = "String", annotations = mapOf("AutoModelField" to "required = true")),
+                    Member(name = "country", type = "String", annotations = mapOf("AutoModelField" to "required = false"))
                 ),
-                annotations = mapOf("AutoModel" to "")
+                annotations = mapOf("AutoMap" to "", "AutoModel" to "")
             ),
             Type(
                 name = "OrderMock",
                 packageName = "com.cpzlabs.kdgn.mocks",
                 implementing = emptyList(),
                 members = listOf(
-                    Member(name = "orderId", type = "String"),
-                    Member(name = "customerId", type = "String"),
-                    Member(name = "productsId", type = "List<String>")
+                    Member(name = "orderId", type = "String", annotations = mapOf("AutoModelField" to "required = true")),
+                    Member(name = "customerId", type = "String", annotations = mapOf("AutoModelField" to "required = true")),
+                    Member(name = "productsId", type = "List<ProductMock>", annotations = mapOf("AutoModelField" to "required = true"))
+                ),
+                annotations = mapOf("AutoMap" to "", "AutoModel" to "")
+            ),
+            Type(
+                name = "ProductMock",
+                packageName = "com.cpzlabs.kdgn.mocks",
+                implementing = emptyList(),
+                members = listOf(
+                    Member(name = "productId", type = "String")
                 )
             )
         )

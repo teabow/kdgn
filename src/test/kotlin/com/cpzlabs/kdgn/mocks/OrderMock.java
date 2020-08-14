@@ -1,11 +1,23 @@
 package com.cpzlabs.kdgn.mocks;
 
+import com.cpzlabs.kdgn.annotations.AutoMap;
+import com.cpzlabs.kdgn.annotations.AutoModel;
+import com.cpzlabs.kdgn.annotations.AutoModelField;
+
 import java.util.List;
 
+@AutoMap
+@AutoModel
 public class OrderMock {
+
+    @AutoModelField(required = true)
     private String orderId;
+
+    @AutoModelField(required = true)
     private String customerId;
-    private List<String> productsId;
+
+    @AutoModelField(required = true)
+    private List<ProductMock> productsId;
 
     public String getOrderId() {
         return orderId;
@@ -23,11 +35,11 @@ public class OrderMock {
         this.customerId = customerId;
     }
 
-    public List<String> getProductsId() {
+    public List<ProductMock> getProductsId() {
         return productsId;
     }
 
-    public void setProductsId(List<String> productsId) {
+    public void setProductsId(List<ProductMock> productsId) {
         this.productsId = productsId;
     }
 }

@@ -1,17 +1,22 @@
 package com.cpzlabs.kdgn.mocks;
 
+import com.cpzlabs.kdgn.annotations.AutoMap;
 import com.cpzlabs.kdgn.annotations.AutoModel;
 import com.cpzlabs.kdgn.annotations.AutoModelField;
 
 import java.io.Serializable;
 
+@AutoMap
 @AutoModel
 public class AddressMock implements Serializable {
 
+    @AutoModelField(required = true)
     private String street;
 
+    @AutoModelField(required = true)
     private String city;
 
+    @AutoModelField(required = true)
     private String zipCode;
 
     @AutoModelField(required = false)

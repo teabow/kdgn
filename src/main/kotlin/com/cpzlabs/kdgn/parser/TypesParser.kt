@@ -94,7 +94,7 @@ fun parseFile(fileContent: String): List<Type> {
 private fun getNodeAnnotations(node: com.github.javaparser.ast.Node): Map<String, String> {
     return if (node is BodyDeclaration<*>) {
         return node.annotations.fold(mutableMapOf(), { acc, current ->
-            acc[current.nameAsString] = if (current is NormalAnnotationExpr) current.pairs.toString() else ""
+            acc[current.nameAsString] = if (current is NormalAnnotationExpr) current.pairs.joinToString() else ""
             acc
         })
     } else emptyMap()
