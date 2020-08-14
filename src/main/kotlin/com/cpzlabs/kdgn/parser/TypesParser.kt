@@ -25,6 +25,21 @@ fun isPropertyVisible(property: Node.Decl.Property): Boolean {
     }
 }
 
+private fun getKtNodeAnnotations(node: Node.WithAnnotations): Map<String, String> {
+    return node.anns.flatMap { it.anns }.fold(mutableMapOf(), { acc, current ->
+        val value = if (current.args.count() > 0) current.args.mapNotNull {
+            val expr = (it.expr as? Node.Expr.Const)?.value ?: ""
+            if (expr.isNotEmpty()) {
+                "${it.name} = $expr"
+            } else {
+                null
+            }
+        }.joinToString() else ""
+        acc[current.names.first()] = value
+        acc
+    })
+}
+
 fun parseFile(fileContent: String): List<Type> {
     val types = mutableListOf<Type>()
     var packageName = ""
@@ -46,13 +61,16 @@ fun parseFile(fileContent: String): List<Type> {
                 val propertiesMembersTypes: List<Member> = visitedNode.members.fold(mutableListOf()) { acc, current ->
                     val prop = current as? Node.Decl.Property
                     if (prop != null && isPropertyVisible(prop)) {
+                        val propAnnotations = prop.getNodeComments(extrasMap).toMutableMap()
+                        propAnnotations.putAll(getKtNodeAnnotations(prop))
+
                         mutableListOf(
                             *acc.toTypedArray(),
                             *prop.vars.mapNotNull { v ->
                                 if (v != null) {
                                     Member(
                                         name = v.name,
-                                        annotations = prop.getNodeComments(extrasMap)
+                                        annotations = propAnnotations
                                     )
                                 } else {
                                     null
@@ -64,13 +82,18 @@ fun parseFile(fileContent: String): List<Type> {
                 // parse primary constructor members
                 val constructorMembersTypes: List<Member> =
                     visitedNode.primaryConstructor?.params?.fold(mutableListOf()) { acc, current ->
+                        val propAnnotations = current.getNodeComments(extrasMap).toMutableMap()
+                        propAnnotations.putAll(getKtNodeAnnotations(current))
                         current.readOnly?.let {
                             mutableListOf(
                                 *acc.toTypedArray(),
-                                Member(name = current.name, annotations = current.getNodeComments(extrasMap))
+                                Member(name = current.name, annotations = propAnnotations)
                             )
                         } ?: acc
                     } ?: emptyList()
+
+                val typeAnnotations = visitedNode.getNodeComments(extrasMap).toMutableMap()
+                typeAnnotations.putAll(getKtNodeAnnotations(visitedNode))
 
                 types += Type(
                     name = visitedNode.name,
@@ -79,7 +102,7 @@ fun parseFile(fileContent: String): List<Type> {
                         Type(it.name)
                     },
                     members = listOf(*propertiesMembersTypes.toTypedArray(), *constructorMembersTypes.toTypedArray()),
-                    annotations = visitedNode.getNodeComments(extrasMap)
+                    annotations = typeAnnotations
                 )
             }
             else -> {
@@ -91,7 +114,7 @@ fun parseFile(fileContent: String): List<Type> {
     return types
 }
 
-private fun getNodeAnnotations(node: com.github.javaparser.ast.Node): Map<String, String> {
+private fun getJavaNodeAnnotations(node: com.github.javaparser.ast.Node): Map<String, String> {
     return if (node is BodyDeclaration<*>) {
         return node.annotations.fold(mutableMapOf(), { acc, current ->
             acc[current.nameAsString] = if (current is NormalAnnotationExpr) current.pairs.joinToString() else ""
@@ -124,7 +147,7 @@ fun parseJavaFile(fileContent: String): List<Type> {
                                 Member(
                                     name = variable.nameAsString,
                                     type = variable.type.asString(),
-                                    annotations = getNodeAnnotations(member)
+                                    annotations = getJavaNodeAnnotations(member)
                                 )
                             } else {
                                 null
@@ -135,7 +158,7 @@ fun parseJavaFile(fileContent: String): List<Type> {
                                 name = implemented.nameAsString
                             )
                         },
-                        annotations = getNodeAnnotations(node)
+                        annotations = getJavaNodeAnnotations(node)
                     )
                 }
             }

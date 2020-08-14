@@ -57,7 +57,8 @@ class CodeParserTest {
                 name = "Project",
                 packageName = "com.cpzlabs.kdgn.mocks",
                 implementing = listOf(Type(name = "AutoPersistable")),
-                members = listOf(Member(name = "projectId"), Member(name = "projectName"))
+                members = listOf(Member(name = "projectId", annotations = mapOf("AutoModelField" to "required = true")), Member(name = "projectName")),
+                annotations = mapOf("AutoMap" to "", "AutoModel" to "")
             ),
             Type(
                 name = "AddressMock",
