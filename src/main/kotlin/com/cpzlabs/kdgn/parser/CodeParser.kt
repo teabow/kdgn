@@ -9,7 +9,7 @@ import com.cpzlabs.kdgn.models.Type
 
 fun parseCode(packageSource: String): List<Type> {
     val kotlinFilesTypes = selectRegularFiles(packageSource) { it.extension == KOTLIN_FILE_EXTENSION }
-        .flatMap { parseFile(it.asString()) }
+        .flatMap { parseKtFile(it.asString()) }
     val javaFilesTypes = selectRegularFiles(packageSource) { it.extension == JAVA_FILE_EXTENSION }
         .flatMap { parseJavaFile(it.asString()) }
     return kotlinFilesTypes + javaFilesTypes

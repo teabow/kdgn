@@ -6,7 +6,7 @@ import kastree.ast.Node
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import com.cpzlabs.kdgn.parser.isPropertyVisible
-import com.cpzlabs.kdgn.parser.parseFile
+import com.cpzlabs.kdgn.parser.parseKtFile
 
 class TypesParserTest {
 
@@ -44,20 +44,22 @@ class TypesParserTest {
             class University(val id: Int, val name: String, region: String): AutoPersistable
         """.trimIndent()
 
-        val types = parseFile(code)
+        val types = parseKtFile(code)
 
         val expected = listOf(
             Type(
                 name = "Academy",
                 packageName = "test",
                 implementing = listOf(Type(name = "AutoPersistable")),
-                members = listOf(Member(name = "country"))
+                members = listOf(Member(name = "country", type = "String")),
+                methods = emptyList()
             ),
             Type(
                 name = "University",
                 packageName = "test",
                 implementing = listOf(Type(name = "AutoPersistable")),
-                members = listOf(Member(name = "id"), Member(name = "name")),
+                members = listOf(Member(name = "id", type = "Int"), Member(name = "name", type = "String")),
+                methods = emptyList(),
                 annotations = mapOf("sourceable" to "true")
             )
         )

@@ -1,7 +1,10 @@
 package com.cpzlabs.kdgn.parser
 
+import com.cpzlabs.kdgn.extensions.getDeclaredType
 import com.cpzlabs.kdgn.extensions.getNodeComments
+import com.cpzlabs.kdgn.extensions.getReturnType
 import com.cpzlabs.kdgn.models.Member
+import com.cpzlabs.kdgn.models.Method
 import com.cpzlabs.kdgn.models.Type
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.PackageDeclaration
@@ -40,7 +43,7 @@ private fun getKtNodeAnnotations(node: Node.WithAnnotations): Map<String, String
     })
 }
 
-fun parseFile(fileContent: String): List<Type> {
+fun parseKtFile(fileContent: String): List<Type> {
     val types = mutableListOf<Type>()
     var packageName = ""
 
@@ -58,36 +61,63 @@ fun parseFile(fileContent: String): List<Type> {
                 val parent = visitedNode.parents.map { it as? Node.Decl.Structured.Parent.Type }
 
                 // parse properties members
-                val propertiesMembersTypes: List<Member> = visitedNode.members.fold(mutableListOf()) { acc, current ->
-                    val prop = current as? Node.Decl.Property
-                    if (prop != null && isPropertyVisible(prop)) {
-                        val propAnnotations = prop.getNodeComments(extrasMap).toMutableMap()
-                        propAnnotations.putAll(getKtNodeAnnotations(prop))
+                val membersPair = Pair<List<Member>, List<Method>>(mutableListOf(), mutableListOf())
+                val membersTypes = visitedNode.members.fold(membersPair) { acc, current ->
 
-                        mutableListOf(
-                            *acc.toTypedArray(),
-                            *prop.vars.mapNotNull { v ->
-                                if (v != null) {
-                                    Member(
-                                        name = v.name,
-                                        annotations = propAnnotations
+                    val (members, methods) = acc
+
+                    when (current) {
+                        is Node.Decl.Property -> {
+                            if (isPropertyVisible(current)) {
+                                val propAnnotations = current.getNodeComments(extrasMap).toMutableMap()
+                                propAnnotations.putAll(getKtNodeAnnotations(current))
+
+                                Pair(
+                                    mutableListOf(
+                                        *members.toTypedArray(),
+                                        *current.vars.mapNotNull { v ->
+                                            if (v != null) {
+                                                Member(
+                                                    name = v.name,
+                                                    type = v.getDeclaredType(),
+                                                    annotations = propAnnotations
+                                                )
+                                            } else {
+                                                null
+                                            }
+                                        }.toTypedArray()
+                                    ), acc.second
+                                )
+                            } else {
+                                acc
+                            }
+                        }
+                        is Node.Decl.Func -> {
+                            if (current.name != null) {
+                                Pair(
+                                    acc.first, mutableListOf(
+                                        *methods.toTypedArray(),
+                                        Method(current.name!!, returnType = current.getReturnType())
                                     )
-                                } else {
-                                    null
-                                }
-                            }.toTypedArray()
-                        )
-                    } else acc
+                                )
+                            } else acc
+                        }
+                        else -> {
+                            // do nothing
+                            acc
+                        }
+                    }
                 }
                 // parse primary constructor members
-                val constructorMembersTypes: List<Member> =
+                val constructorMembersTypes
+                        : List<Member> =
                     visitedNode.primaryConstructor?.params?.fold(mutableListOf()) { acc, current ->
                         val propAnnotations = current.getNodeComments(extrasMap).toMutableMap()
                         propAnnotations.putAll(getKtNodeAnnotations(current))
                         current.readOnly?.let {
                             mutableListOf(
                                 *acc.toTypedArray(),
-                                Member(name = current.name, annotations = propAnnotations)
+                                Member(name = current.name, type = current.getDeclaredType(), annotations = propAnnotations)
                             )
                         } ?: acc
                     } ?: emptyList()
@@ -101,7 +131,8 @@ fun parseFile(fileContent: String): List<Type> {
                     implementing = parent.flatMap { it?.type?.pieces ?: emptyList() }.map {
                         Type(it.name)
                     },
-                    members = listOf(*propertiesMembersTypes.toTypedArray(), *constructorMembersTypes.toTypedArray()),
+                    members = listOf(*membersTypes.first.toTypedArray(), *constructorMembersTypes.toTypedArray()),
+                    methods = membersTypes.second,
                     annotations = typeAnnotations
                 )
             }
@@ -153,6 +184,7 @@ fun parseJavaFile(fileContent: String): List<Type> {
                                 null
                             }
                         },
+                        methods = node.methods.map { Method(it.nameAsString, returnType = it.typeAsString) },
                         implementing = node.implementedTypes.map { implemented ->
                             Type(
                                 name = implemented.nameAsString

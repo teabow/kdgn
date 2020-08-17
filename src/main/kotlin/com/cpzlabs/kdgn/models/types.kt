@@ -11,6 +11,7 @@ data class Type(
     val implementing: List<Type>? = null,
     val inheriting: List<Type>? = null,
     var members: List<Member>? = null,
+    var methods: List<Method>? = null,
     override var annotations: Map<String, String> = emptyMap()
 ) : AbstractType(name, annotations)
 
@@ -18,4 +19,10 @@ data class Member(
     override val name: String,
     val type: String? = null,
     override var annotations: Map<String, String> = emptyMap()
+) : AbstractType(name, annotations)
+
+data class Method(
+    override val name: String,
+    override var annotations: Map<String, String> = emptyMap(),
+    val returnType: String? = null
 ) : AbstractType(name, annotations)
