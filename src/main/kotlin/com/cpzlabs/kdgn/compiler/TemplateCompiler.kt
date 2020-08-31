@@ -31,8 +31,32 @@ private fun buildDefaultTemplateConfig(): TemplateConfig {
             it is Type && it.annotations.keys.find { annotated -> annotated == args[0].toDynamicString() } != null
         }
     })
+    config.register(Filter("annotationValue") {
+        @Suppress("UNCHECKED_CAST")
+        val annotations = subject.toDynamicList() as? List<Pair<String, String>> ?: emptyList()
+        val annotationName = args[0].toDynamicString()
+        val annotationFieldName = args[1].toDynamicString()
+
+        var annotationValue = ""
+        for (annotation in annotations) {
+            val (key, value) = annotation
+
+            val regexValue = "$annotationFieldName\\s+=\\s+(.*?),|$annotationFieldName\\s+=\\s+(.*)$".toRegex()
+            val matchResult = regexValue.find(value)
+
+            if (key == annotationName && matchResult?.destructured != null) {
+                val (matchValue1, matchValue2) =  matchResult.destructured
+                annotationValue = if (matchValue1.isNotEmpty()) matchValue1 else matchValue2
+            }
+        }
+
+        annotationValue
+    })
     config.register(Filter("capital") {
         subject.toString().capitalize()
+    })
+    config.register(Filter("replace") {
+        subject.toString().replace(args[0].toDynamicString(), args[1].toDynamicString())
     })
     return config
 }
@@ -65,14 +89,18 @@ private suspend fun compileTemplate(file: File, types: List<Type>, packageDest: 
         """.trimMargin()
 
     } else {
+        var preContent = ""
         renderedChunks.forEach { chunk ->
             val matchResult = "(${RENDERED_SPLIT_MARKERS.joinToString("|")})\\s+(.*)\\s*\\{".toRegex().find(chunk)
+            preContent = if (matchResult?.destructured == null) preContent + chunk else preContent
 
             matchResult?.destructured?.let {
                 val (_, entityName) = it
 
+                val generatedFileName = entityName.trim().split(" ").first()
+
                 val generatedFilePath =
-                    "$packageDest${File.separator}${entityName.trim()}.${file.name.replace(
+                    "$packageDest${File.separator}${generatedFileName}.${file.name.replace(
                         ".$TEMPLATE_FILE_EXTENSION",
                         ""
                     ).getFileExtension()}"
@@ -80,6 +108,7 @@ private suspend fun compileTemplate(file: File, types: List<Type>, packageDest: 
                 File(generatedFilePath) writeString """
                 |${renderedHeader.trimIndent()}
                 |${generateImports(chunk, types, lineSuffix).trimIndent()}
+                |${preContent.trimIndent()}
                 |${chunk.trimIndent()}
             """.trimMargin()
             }

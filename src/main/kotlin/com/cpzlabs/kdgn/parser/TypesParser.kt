@@ -184,7 +184,13 @@ fun parseJavaFile(fileContent: String): List<Type> {
                                 null
                             }
                         },
-                        methods = node.methods.map { Method(it.nameAsString, returnType = it.typeAsString) },
+                        methods = node.methods.map {
+                            Method(
+                                it.nameAsString,
+                                returnType = it.typeAsString,
+                                annotations = getJavaNodeAnnotations(it)
+                            )
+                        },
                         implementing = node.implementedTypes.map { implemented ->
                             Type(
                                 name = implemented.nameAsString
