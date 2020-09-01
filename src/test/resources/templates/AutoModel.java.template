@@ -1,0 +1,26 @@
+{% for type in types | annotatedWith("AutoModel") %}
+public class AutoModel_{{ type.name }} {
+    {% for member in type.members %}
+        {%- for key, value in member.annotations -%}
+        {%- if key == "AutoModelField" && value != "required = false" %}
+    private {{ member.type | raw }} {{ member.name }};
+        {%- endif %}
+        {%- endfor -%}
+    {% endfor %}
+
+    {% for member in type.members %}
+        {%- for key, value in member.annotations -%}
+        {%- if key == "AutoModelField" && value != "required = false" %}
+    public {{ member.type | raw }} get{{ member.name | capital }}() {
+        return this.{{ member.name }};
+    }
+
+    public void set{{ member.name | capital }}({{ member.type | raw }} {{ member.name }}) {
+        this.{{ member.name }} = {{ member.name }};
+    }
+
+        {%- endif %}
+        {%- endfor -%}
+    {% endfor %}
+}
+{% endfor %}

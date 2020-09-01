@@ -7,6 +7,17 @@ import java.nio.file.Paths
 import kotlin.streams.toList
 
 const val KOTLIN_FILE_EXTENSION = "kt"
+const val JAVA_FILE_EXTENSION = "java"
+
+fun String.getFileExtension(): String {
+    val extensions = listOf(KOTLIN_FILE_EXTENSION, JAVA_FILE_EXTENSION)
+    for (extension in extensions) {
+        if (this.endsWith(".$extension")) {
+            return extension
+        }
+    }
+    return ""
+}
 
 fun File.asString() = try {
     this.readText(charset = Charsets.UTF_8)

@@ -1,8 +1,4 @@
 {% for type in types | implementing("AutoPersistable") %}
-    import {{ type.packageName }}.{{ type.name }}
-{% endfor %}
-
-{% for type in types | implementing("AutoPersistable") %}
     fun {{ type.name }}.persist() {
         {% for member in type.members %}
         // {{ member.name }} = {{ member.annotations["persistence.defaultValue"] | raw }}

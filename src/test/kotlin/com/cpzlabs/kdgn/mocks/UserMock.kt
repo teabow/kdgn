@@ -9,4 +9,4 @@ data class UserMock(
     val lastname: String,
     // kdgn:persistence: defaultValue = "3"
     val firstname: String
-): UserSpec, AutoPersistable
+) : UserSpec, AutoPersistable

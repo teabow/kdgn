@@ -1,0 +1,17 @@
+{% for type in types | annotatedWith("AutoMap") %}
+public class AutoMap_{{ type.name }} {
+
+    public static Map<String, Object> getMap({{ type.name }} {{ type.name | lower }}) {
+        Map<String, Object> map = new HashMap<>();
+    {% for member in type.members %}
+        {%- for key, value in member.annotations -%}
+        {%- if key == "AutoModelField" && value != "required = false" %}
+        map.put("{{ member.name }}", {{ type.name | lower }}.get{{ member.name | capital }}());
+        {%- endif %}
+        {%- endfor -%}
+    {% endfor %}
+
+        return map;
+    }
+}
+{% endfor %}
