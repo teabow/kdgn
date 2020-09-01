@@ -31,6 +31,13 @@ private fun buildDefaultTemplateConfig(): TemplateConfig {
             it is Type && it.annotations.keys.find { annotated -> annotated == args[0].toDynamicString() } != null
         }
     })
+    config.register(Filter("hasAnnotation") {
+        @Suppress("UNCHECKED_CAST")
+        val annotations = subject.toDynamicList() as? List<Pair<String, String>> ?: emptyList()
+        val annotationName = if (args.isNotEmpty()) args[0].toDynamicString() else ""
+
+        annotations.find { it.first == annotationName } != null
+    })
     config.register(Filter("annotationValue") {
         @Suppress("UNCHECKED_CAST")
         val annotations = subject.toDynamicList() as? List<Pair<String, String>> ?: emptyList()
