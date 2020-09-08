@@ -12,6 +12,7 @@ import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.expr.NormalAnnotationExpr
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr
 import com.github.javaparser.ast.visitor.TreeVisitor
 import kastree.ast.Node
 import kastree.ast.Visitor
@@ -148,7 +149,17 @@ fun parseKtFile(fileContent: String): List<Type> {
 private fun getJavaNodeAnnotations(node: com.github.javaparser.ast.Node): Map<String, String> {
     return if (node is BodyDeclaration<*>) {
         return node.annotations.fold(mutableMapOf(), { acc, current ->
-            acc[current.nameAsString] = if (current is NormalAnnotationExpr) current.pairs.joinToString() else ""
+            when (current) {
+                is SingleMemberAnnotationExpr -> {
+                    acc[current.nameAsString] = current.memberValue.toString()
+                }
+                is NormalAnnotationExpr -> {
+                    acc[current.nameAsString] = current.pairs.joinToString()
+                }
+                else -> {
+                    acc[current.nameAsString] = ""
+                }
+            }
             acc
         })
     } else emptyMap()
