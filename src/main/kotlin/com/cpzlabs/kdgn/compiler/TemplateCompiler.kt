@@ -24,8 +24,8 @@ private fun buildDefaultTemplateConfig(): TemplateConfig {
     val config = TemplateConfig()
     config.register(TeFunction("substring") { args ->
         val value = args.getOrNull(0).toDynamicString()
-        val startIndex = args.getOrNull(0).toDynamicInt()
-        val endIndex = args.getOrNull(1).toDynamicInt()
+        val startIndex = args.getOrNull(1).toDynamicInt()
+        val endIndex = args.getOrNull(2).toDynamicInt()
         value.substring(startIndex, endIndex)
     })
     config.register(Filter("implementing") {
