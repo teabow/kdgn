@@ -6,6 +6,7 @@ import com.cpzlabs.kdgn.parser.generateImports
 import com.cpzlabs.kdgn.parser.getGeneratedPackage
 import com.cpzlabs.kdgn.parser.parseCode
 import com.soywiz.korte.Filter
+import com.soywiz.korte.TeFunction
 import com.soywiz.korte.Template
 import com.soywiz.korte.TemplateConfig
 import kotlinx.coroutines.runBlocking
@@ -21,6 +22,12 @@ internal val RENDERED_SPLIT_MARKERS = listOf("public class", "public interface",
 
 private fun buildDefaultTemplateConfig(): TemplateConfig {
     val config = TemplateConfig()
+    config.register(TeFunction("substring") { args ->
+        val value = args.getOrNull(0).toDynamicString()
+        val startIndex = args.getOrNull(0).toDynamicInt()
+        val endIndex = args.getOrNull(1).toDynamicInt()
+        value.substring(startIndex, endIndex)
+    })
     config.register(Filter("implementing") {
         subject.toDynamicList().filter {
             it is Type && it.implementing?.find { implements -> implements.name == args[0].toDynamicString() } != null
